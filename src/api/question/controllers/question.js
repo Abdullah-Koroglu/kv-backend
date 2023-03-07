@@ -14,32 +14,49 @@ module.exports = createCoreController('api::question.question', ({ strapi }) => 
       const {game, level} = ctx.request.body
       console.log ({game, level})
 
-      // const occupation = await strapi.db.query('api::question.question').select('id');
-
       const uid = "api::question.question";
 
       const ids = (
           await strapi.db.connection
-              .select("id")
+              .select("questions.*")
               .from(strapi.getModel(uid).collectionName)
-              // The random function of your DB. This one is Postgres'.
+              .join ('questions_game_links', {'questions_game_links.question_id': 'questions.id'})
+              .join ('questions_level_links', 'questions_level_links.question_id', 'questions.id')
+              .join ('games', {'games.id': 'questions_game_links.game_id'})
+              .join ('levels', 'levels.id', 'questions_level_links.level_id')
+              .where ({game_value: game, level_value: level})
               .orderByRaw("RANDOM()")
-              // Your desired number of samples.
               .limit(1)
-      ).map(it => it.id)
+      )
+      .map(it => it.id)
 
-      const samples = await strapi.entityService.findMany(uid, {
-        filters: {
-          id: {
-            $in: ids
-          }
-          }
-        })
+      const samples = await strapi.entityService.findOne(uid, ids[0], {populate: { photo: true, video: true }})
 
-      console.log ({ids})
       ctx.body = samples
       return 'response';
     } catch (err) {
+      console.log (err)
+      ctx.body = err;
+    }
+  },
+
+  async checkAnswer(ctx) {
+    try {
+      const {id, answer} = ctx.request.body
+      console.log ({id, answer})
+
+      const uid = "api::question.question";
+
+      const samples = await strapi.entityService.findOne(uid, id)
+      if (answer === samples.answer) {
+        ctx.body = true
+      } else {
+        ctx.body = false
+      }
+
+      return 'response';
+    } catch (err) {
+      console.log (err)
       ctx.body = err;
     }
   }

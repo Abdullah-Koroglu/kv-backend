@@ -4,7 +4,8 @@
   "info": {
     "singularName": "level",
     "pluralName": "levels",
-    "displayName": "level"
+    "displayName": "level",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -15,7 +16,7 @@
     }
   },
   "attributes": {
-    "id_value": {
+    "level_value": {
       "pluginOptions": {
         "i18n": {
           "localized": true

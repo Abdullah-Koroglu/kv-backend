@@ -4,7 +4,8 @@
   "info": {
     "singularName": "game",
     "pluralName": "games",
-    "displayName": "game"
+    "displayName": "game",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -15,7 +16,7 @@
     }
   },
   "attributes": {
-    "id_value": {
+    "game_value": {
       "pluginOptions": {
         "i18n": {
           "localized": true
